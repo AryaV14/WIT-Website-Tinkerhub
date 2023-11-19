@@ -1,0 +1,38 @@
+.footer{
+  display: flex;
+  flex-wrap: wrap;
+  font-family: 'Poppins', sans-serif;
+  font-family: 'Rajdhani', sans-serif;
+  font-family: 'Roboto', sans-serif;
+ }
+ul{
+  list-style-type: none;
+}
+a{
+  text-decoration: none;
+  color: black;
+}
+h5{
+  color: #919191;
+  margin-left: 43px;
+  font-weight: 550;
+  font-size:medium;
+ 
+}
+.container{
+  padding-left:60px;
+}
+
+.c1{
+  margin:15px;
+}
+
+li{
+  padding: 5px;
+}
+
+img{
+  padding-left: 50px;
+  padding-top: 50px;
+  padding-bottom:0px;
+}
