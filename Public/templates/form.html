@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../style/form.css">
+    <title>Form Page</title>
+</head>
+
+<body>
+    <div class="container">
+        <h1>👏Contribute to the community</h1>
+
+        <form id="projectForm">
+            <div class="form-row">
+                <label for="name">Name</label>
+                <input type="text" id="name" name="name" placeholder="Fill the name you want to showcase" required>
+            </div>
+            
+            <div class="form-row">
+                <label for="projectName">Project Name</label>
+                <input type="text" id="projectName" name="projectName" placeholder="Add a name for your creation" required>
+            </div>
+            
+            <div class="form-row">
+                <label for="description">Description</label>
+                <textarea id="description" name="description" rows="4" placeholder="Include a small intro of what your project is" required></textarea>
+            </div>
+            
+            <div class="form-row">
+                <label for="github">GitHub</label>
+                <input type="text" id="github" name="github" placeholder="Add source code here" required>
+            </div>
+
+            <div class="form-row button-row">
+                <button type="submit">Upload Now</button>
+            </div>
+        </form>
+    </div>
+</body>
+
+</html>
