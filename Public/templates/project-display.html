@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 50px;
+        }
+
+        #project-list {
+            margin-top: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        button {
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .project-box {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 10px;
+            margin: 10px;
+            width: 300px;
+            text-align: left;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        .project-box strong {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        hr {
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+
+        #search-input, #search-button {
+            margin-bottom: 10px;
+        }
+    </style>
+    <title>Project Display</title>
+</head>
+<body>
+
+<div>
+    <label>Search by Tags:</label>
+    <input id="search-input" type="text">
+    <button id="search-button">Search</button>
+</div>
+
+<div id="project-list"></div>
+
+<script type="module" src="firebase.js"></script>
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-app.js";
+    import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-firestore.js";
+
+    const db = getFirestore();
+
+    async function displayProjects() {
+        const projectList = document.getElementById("project-list");
+        projectList.innerHTML = "";
+
+        const projectsCollection = collection(db, "wit-th-projectlist");
+        const querySnapshot = await getDocs(projectsCollection);
+
+        querySnapshot.forEach((doc) => {
+            const projectData = doc.data();
+            const projectElement = document.createElement("div");
+            projectElement.classList.add("project-box");
+
+            const linkElement = document.createElement("a");
+            linkElement.href = projectData.ProjectLink;
+            linkElement.textContent = "Link";
+
+            projectElement.innerHTML = `<strong>${projectData.ProjectName}</strong> by ${projectData.ProjectAuthor}<br>
+                                    Description: ${projectData.ProjectDesc}<br>
+                                    Link: `;
+            projectElement.appendChild(linkElement);
+            projectElement.innerHTML += "<hr>";
+
+            projectList.appendChild(projectElement);
+        });
+    }
+
+    async function searchProjects() {
+        const projectList = document.getElementById("project-list");
+        projectList.innerHTML = ""; 
+
+        const searchTerm = document.getElementById("search-input").value.toLowerCase();
+
+        const projectsCollection = collection(db, "wit-th-projectlist");
+        const querySnapshot = await getDocs(projectsCollection);
+
+        querySnapshot.forEach((doc) => {
+            const projectData = doc.data();
+
+        
+            const hasMatchingTag = projectData.ProjectTags.some(tag => tag.toLowerCase().includes(searchTerm));
+
+            if (hasMatchingTag) {
+                const projectElement = document.createElement("div");
+                projectElement.classList.add("project-box");
+
+                const linkElement = document.createElement("a");
+                linkElement.href = projectData.ProjectLink;
+                linkElement.textContent = "Link";
+
+                projectElement.innerHTML = `<strong>${projectData.ProjectName}</strong> by ${projectData.ProjectAuthor}<br>
+                                        Description: ${projectData.ProjectDesc}<br>
+                                        Link: `;
+                projectElement.appendChild(linkElement);
+                projectElement.innerHTML += "<hr>";
+
+                projectList.appendChild(projectElement);
+            }
+        });
+    }
+
+    
+    document.getElementById("search-button").addEventListener("click", searchProjects);
+
+    
+    displayProjects();
+</script>
+
+</body>
+</html>

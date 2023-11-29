@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        center {
+            text-align: center;
+            margin-top: 50px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        input {
+            width: 300px;
+            margin-bottom: 10px;
+        }
+
+        button {
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        #project-list {
+            margin-top: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .project-box {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 10px;
+            margin: 10px;
+            width: 300px;
+            text-align: left;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        .project-box strong {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        hr {
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+
+        #search-input, #search-button {
+            margin-bottom: 10px;
+        }
+    </style>
+    <title>Project Entry Form</title>
+</head>
+<body>
+
+<center>
+    <label>Project Name</label><input id="project-name" type="text"><br>
+    <label>Project Desc</label><input id="project-desc" type="text"><br>
+    <label>Project Link</label><input id="project-link" type="text"><br>
+    <label>Project Author Name</label><input id="project-author" type="text"><br>
+    <label>Project Tags: ( Enter the tags separated by space ) </label><textarea id="project-tags" rows="3"></textarea><br>
+    
+    <button id="add-project">Create New Project</button>
+
+    <div id="project-list"></div>
+</center>
+
+<script type="module" src="firebase.js"></script>
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-app.js";
+    import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-firestore.js";
+
+    l
+    const db = getFirestore();
+
+    let projectList = document.getElementById("project-list");
+
+    document.getElementById("add-project").addEventListener("click", async () => {
+        const projectName = document.getElementById("project-name").value;
+        const projectAuthor = document.getElementById("project-author").value;
+        const projectDesc = document.getElementById("project-desc").value;
+        const projectLink = document.getElementById("project-link").value;
+        const projectTags = document.getElementById("project-tags").value.split('\n');
+
+        const projectsCollection = collection(db, "wit-th-project-list");
+
+        await addDoc(projectsCollection, {
+            ProjectName: projectName,
+            ProjectAuthor: projectAuthor,
+            ProjectDesc: projectDesc,
+            ProjectLink: projectLink,
+            ProjectTags: projectTags
+        }).then(() => {
+            alert("Data added successfully");
+            // Update project list after adding a new project
+            
+        }).catch((error) => {
+            alert("Unsuccessful, error: " + error);
+        });
+    });
+
+    async function updateProjectList() {
+        projectList.innerHTML = ""; // Clear the previous content
+
+        const projectsCollection = collection(db, "wit-th-projectlist");
+        const querySnapshot = await getDocs(projectsCollection);
+
+        querySnapshot.forEach((doc) => {
+            const projectData = doc.data();
+            const projectElement = document.createElement("div");
+            projectElement.classList.add("project-box");
+
+            const linkElement = document.createElement("a");
+            linkElement.href = projectData.ProjectLink;
+            linkElement.textContent = "Link";
+
+            projectElement.innerHTML = `<strong>${projectData.ProjectName}</strong> by ${projectData.ProjectAuthor}<br>
+                                    Description: ${projectData.ProjectDesc}<br>
+                                    Link: `;
+            projectElement.appendChild(linkElement);
+            projectElement.innerHTML += "<hr>";
+
+            projectList.appendChild(projectElement);
+        });
+    }
+</script>
+
+</body>
+</html>
